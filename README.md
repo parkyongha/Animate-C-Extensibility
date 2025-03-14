@@ -1,7 +1,3 @@
-아래는 Git 리포지토리 설명에 추가할 수 있는 예시 설명문입니다. 필요에 따라 내용을 수정하거나 추가할 수 있습니다.
-
----
-
 # Animate Extensibility DLL
 
 이 프로젝트는 C++로 작성된 DLL을 통해 Adobe Animate의 C-Level Extensibility 기능을 확장하는 예제입니다. 이 DLL은 Animate에서 JSFL 스크립트를 통해 호출할 수 있는 함수를 내보내어, Animate 내부에서 C/C++ 기반의 기능(예: 소켓 통신)을 실행할 수 있도록 설계되었습니다.
