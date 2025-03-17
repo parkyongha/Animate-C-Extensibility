@@ -1,4 +1,4 @@
-
+ï»¿
 //this one is for sample.cpp
 extern "C"
 {
@@ -6,14 +6,18 @@ extern "C"
 }
 
 #include "SockerClient.h"
-#include <string>
+
+#include <chrono>
+#include <iostream>
+#include <memory>
 #include <sstream>
+#include <string>
 
 #pragma comment(lib, "ws2_32.lib")
 
 SOCKET sock;
 
-// Wide ¹®ÀÚ¿­À» UTF-8 ÀÎÄÚµùÀ¸·Î º¯È¯ÇÏ´Â ÇÔ¼ö
+// Wide ë¬¸ìì—´ì„ UTF-8 ì¸ì½”ë”©ìœ¼ë¡œ ë³€í™˜í•˜ëŠ” í•¨ìˆ˜
 std::string WideStringToUTF8(const std::wstring& wstr) {
 	if (wstr.empty())
 		return std::string();
@@ -32,11 +36,12 @@ bool connectToServer(SOCKET& sock, const char* serverIP, int port, std::wstring*
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(port);
 
-	// IP ÁÖ¼Ò º¯È¯ ½ÇÆĞ Ã³¸®
+	// IP ì£¼ì†Œ ë³€í™˜ ì‹¤íŒ¨ ì²˜ë¦¬
 	if (InetPtonA(AF_INET, serverIP, &serverAddr.sin_addr) != 1) {
 		std::wstringstream ws;
-		// char*¸¦ std::wstringÀ¸·Î º¯È¯ (¼­¹öIP´Â ASCII·Î °¡Á¤)
-		ws << L"Àß¸øµÈ IP ÁÖ¼ÒÀÔ´Ï´Ù: " << std::wstring(serverIP, serverIP + std::strlen(serverIP)) << L"\n";
+
+		// char*ë¥¼ std::wstringìœ¼ë¡œ ë³€í™˜ (ì„œë²„IPëŠ” ASCIIë¡œ ê°€ì •)
+		ws << L"ì˜ëª»ëœ IP ì£¼ì†Œì…ë‹ˆë‹¤: " << std::wstring(serverIP, serverIP + std::strlen(serverIP)) << L"\n";
 		*message = ws.str();
 		return false;
 	}
@@ -45,81 +50,81 @@ bool connectToServer(SOCKET& sock, const char* serverIP, int port, std::wstring*
 
 	if (sock == INVALID_SOCKET) {
 		std::wstringstream ws;
-		ws << L"¼ÒÄÏ »ı¼º ½ÇÆĞ, ¿À·ù ÄÚµå: " << WSAGetLastError() << L"\n";
+		ws << L"ì†Œì¼“ ìƒì„± ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ: " << WSAGetLastError() << L"\n";
 		*message = ws.str();
 		return false;
 	}
 
 	if (connect(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
 		std::wstringstream ws;
-		ws << L"¼­¹ö ¿¬°á ½ÇÆĞ, ¿À·ù ÄÚµå: " << WSAGetLastError() << L"\n";
+		ws << L"ì„œë²„ ì—°ê²° ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ: " << WSAGetLastError() << L"\n";
 		*message = ws.str();
 		closesocket(sock);
 		return false;
 	}
 
 	std::wstringstream ws;
-	ws << L"¼­¹ö¿¡ ¼º°øÀûÀ¸·Î ¿¬°áµÇ¾ú½À´Ï´Ù.";
+	ws << L"ì„œë²„ì— ì„±ê³µì ìœ¼ë¡œ ì—°ê²°ë˜ì—ˆìŠµë‹ˆë‹¤.";
 	*message = ws.str();
 
 	return true;
 }
 
-// ¼­¹ö¿ÍÀÇ Åë½Å ·çÇÁ¸¦ ±¸ÇöÇÑ ÇÔ¼ö
+// ì„œë²„ì™€ì˜ í†µì‹  ë£¨í”„ë¥¼ êµ¬í˜„í•œ í•¨ìˆ˜
 void communicationLoop(const char* serverIP, int port) {
 	WSADATA wsaData;
-	// Winsock ÃÊ±âÈ­
+	// Winsock ì´ˆê¸°í™”
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-		printf("WSAStartup ½ÇÆĞ\n");
+		printf("WSAStartup ì‹¤íŒ¨\n");
 		return;
 	}
 
-	SOCKET sock;
+	SOCKET sock{};
 
-	// ¼­¹ö¿¡ ¸Ş½ÃÁö Àü¼Û
-	// Wide ¹®ÀÚ¿­·Î ¸Ş½ÃÁö¸¦ Á¤ÀÇ (UTF-16
-	std::wstring wideMsg = L"call:someFunction:HelloFromAnimate ¾È³ç";
-	// UTF-8·Î º¯È¯
+	// ì„œë²„ì— ë©”ì‹œì§€ ì „ì†¡
+	// Wide ë¬¸ìì—´ë¡œ ë©”ì‹œì§€ë¥¼ ì •ì˜ (UTF-16
+	std::wstring wideMsg = L"call:someFunction:HelloFromAnimate ì•ˆë…•";
+	// UTF-8ë¡œ ë³€í™˜
 	std::string msg = WideStringToUTF8(wideMsg);
 
 	int bytesSent = send(sock, msg.c_str(), (int)msg.length(), 0);
 	if (bytesSent == SOCKET_ERROR) {
-		printf("¸Ş½ÃÁö Àü¼Û ½ÇÆĞ, ¿À·ù ÄÚµå: %d\n", WSAGetLastError());
+		printf("ë©”ì‹œì§€ ì „ì†¡ ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ: %d\n", WSAGetLastError());
 	}
 	else {
-		printf("¸Ş½ÃÁö Àü¼Û ¼º°ø: %s\n", msg.c_str());
+		printf("ë©”ì‹œì§€ ì „ì†¡ ì„±ê³µ: %s\n", msg.c_str());
 	}
 
-	// ¼­¹ö·ÎºÎÅÍ ÀÀ´ä ¼ö½Å
+	// ì„œë²„ë¡œë¶€í„° ì‘ë‹µ ìˆ˜ì‹ 
 	char buffer[512];
 	int bytesReceived = recv(sock, buffer, sizeof(buffer) - 1, 0);
 
 	if (bytesReceived > 0) {
-		buffer[bytesReceived] = '\0';  // ¹®ÀÚ¿­ Á¾°á
+		buffer[bytesReceived] = '\0';  // ë¬¸ìì—´ ì¢…ê²°
 
-		// (1) UTF-8 ¡æ WideChar º¯È¯
+		// (1) UTF-8 â†’ WideChar ë³€í™˜
 		wchar_t wbuffer[512];
 		int wlen = MultiByteToWideChar(CP_UTF8, 0, buffer, -1, wbuffer, 512);
 		if (wlen > 0) {
 			wbuffer[wlen] = L'\0';
-			// (2) WideChar ¹®ÀÚ¿­À» wprintf·Î Ãâ·Â
-			wprintf(L"¼­¹ö ÀÀ´ä: %s\n", wbuffer);
+			// (2) WideChar ë¬¸ìì—´ì„ wprintfë¡œ ì¶œë ¥
+			wprintf(L"ì„œë²„ ì‘ë‹µ: %s\n", wbuffer);
 		}
 		else {
-			wprintf(L"MultiByteToWideChar º¯È¯ ½ÇÆĞ\n");
+			wprintf(L"MultiByteToWideChar ë³€í™˜ ì‹¤íŒ¨\n");
 		}
 	}
 	else {
-		wprintf(L"recv ½ÇÆĞ, ¿À·ù ÄÚµå: %d\n", WSAGetLastError());
+		wprintf(L"recv ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ: %d\n", WSAGetLastError());
 	}
 
-	// ¼ÒÄÏ Á¾·á ¹× Winsock Á¤¸®
+	// ì†Œì¼“ ì¢…ë£Œ ë° Winsock ì •ë¦¬
 	closesocket(sock);
 	WSACleanup();
 }
 
 bool isConnectedSocket(SOCKET sock) {
-	// 0¹ÙÀÌÆ® Àü¼ÛÀ» ½ÃµµÇÕ´Ï´Ù.
+	// 0ë°”ì´íŠ¸ ì „ì†¡ì„ ì‹œë„í•©ë‹ˆë‹¤.
 	int ret = send(sock, "", 0, 0);
 
 	if (ret == SOCKET_ERROR) {
@@ -130,10 +135,11 @@ bool isConnectedSocket(SOCKET sock) {
 
 	return true;
 }
+
 JSBool tryConnectSocketClient(std::wstring* message) {
-	// Àü¿ª º¯¼ö·Î ¼±¾ğµÈ ¼ÒÄÏ(sock)ÀÌ ÀÌ¹Ì ¿¬°áµÇ¾î ÀÖ´ÂÁö È®ÀÎ
+	// ì „ì—­ ë³€ìˆ˜ë¡œ ì„ ì–¸ëœ ì†Œì¼“(sock)ì´ ì´ë¯¸ ì—°ê²°ë˜ì–´ ìˆëŠ”ì§€ í™•ì¸
 	if (isConnectedSocket(sock)) {
-		*message = L"ÀÌ¹Ì ¼­¹ö¿¡ ¿¬°áµÇ¾î ÀÖ½À´Ï´Ù.";
+		*message = L"ì´ë¯¸ ì„œë²„ì— ì—°ê²°ë˜ì–´ ìˆìŠµë‹ˆë‹¤.";
 		return JS_TRUE;
 	}
 
@@ -141,24 +147,25 @@ JSBool tryConnectSocketClient(std::wstring* message) {
 	int startupResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (startupResult != 0) {
 		std::wstringstream ws;
-		ws << L"WSAStartup ½ÇÆĞ, ¿À·ù ÄÚµå: " << startupResult;
+		ws << L"WSAStartup ì‹¤íŒ¨, ì˜¤ë¥˜ ì½”ë“œ: " << startupResult;
 		*message = ws.str();
 		return JS_FALSE;
 	}
 
-	// ¼­¹ö Á¤º¸ ¼³Á¤ (ÇöÀç ·ÎÄÃ IP, Æ÷Æ® 50313)
+	// ì„œë²„ ì •ë³´ ì„¤ì • (í˜„ì¬ ë¡œì»¬ IP, í¬íŠ¸ 50313)
 	const char* serverIP = "127.0.0.1";
 	const int port = 50313;
 
 	std::wstring connectMsg;
 
-	// ¼­¹ö ¿¬°á ½Ãµµ; connectToServer´Â resultMessage¸¦ ³»ºÎ¿¡¼­ ¼³Á¤ÇÕ´Ï´Ù.
+	// ì„œë²„ ì—°ê²° ì‹œë„; connectToServerëŠ” resultMessageë¥¼ ë‚´ë¶€ì—ì„œ ì„¤ì •í•©ë‹ˆë‹¤.
 	if (!connectToServer(sock, serverIP, port, &connectMsg)) {
 		*message = connectMsg;
+
 		WSACleanup();
 		return JS_FALSE;
 	}
 
-	*message = L"¼­¹ö¿¡ ¼º°øÀûÀ¸·Î ¿¬°áµÇ¾ú½À´Ï´Ù.";
+	*message = L"ì„œë²„ì— ì„±ê³µì ìœ¼ë¡œ ì—°ê²°ë˜ì—ˆìŠµë‹ˆë‹¤.";
 	return JS_TRUE;
 }

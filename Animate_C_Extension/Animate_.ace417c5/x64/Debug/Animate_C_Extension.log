@@ -1,4 +1,8 @@
 ﻿  dllmain.cpp
-     C:\Users\USER\yh\Animate_C_Extension\x64\Debug\Animate_C_Extension.lib 라이브러리 및 C:\Users\USER\yh\Animate_C_Extension\x64\Debug\Animate_C_Extension.exp 개체를 생성하고 있습니다.
-MSVCRTD.lib(exe_winmain.obj) : error LNK2019: WinMain"int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 함수에서 참조되는 확인할 수 없는 외부 기호
-C:\Users\USER\yh\Animate_C_Extension\x64\Debug\Animate_C_Extension.exe : fatal error LNK1120: 1개의 확인할 수 없는 외부 참조입니다.
+C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\SockerClient.h(12,14): warning C4190: 'WideStringToUTF8'에 C 연결을 지정했으나 C와 호환되지 않는 UDT 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'을(를) 반환합니다.
+  SocketClient.cpp
+C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\SockerClient.h(12,14): warning C4190: 'WideStringToUTF8'에 C 연결을 지정했으나 C와 호환되지 않는 UDT 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'을(를) 반환합니다.
+  코드를 생성하고 있습니다...
+  LINK : C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.dll을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
+     C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.lib 라이브러리 및 C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.exp 개체를 생성하고 있습니다.
+  Animate_C_Extension.vcxproj -> C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.dll
