@@ -14,12 +14,12 @@
       "AbsoluteMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.40.33807\\INCLUDE\\COROUTINE||{3B902123-F8A7-4915-9F01-361F908088D0}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\jsapi.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|solutionrelative:jsapi.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\SockerClient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|solutionrelative:SockerClient.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\jsapi.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{ACE417C5-6787-4D8F-821D-5C8FE0F9A8CF}|Animate_C_Extension.vcxproj|solutionrelative:jsapi.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\include\\yvals_core.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
@@ -42,7 +42,7 @@
               "RelativeDocumentMoniker": "dllmain.cpp",
               "ToolTip": "C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\dllmain.cpp",
               "RelativeToolTip": "dllmain.cpp",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAACcAAAAAAAAA",
+              "ViewState": "AQIAAGgAAAAAAAAAAAAwwHUAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-03-17T09:39:46.046Z",
               "IsPinned": true,
@@ -56,14 +56,14 @@
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\include\\coroutine",
               "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\include\\coroutine",
               "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.40.33807\\include\\coroutine",
-              "ViewState": "AQIAAHcAAAAAAAAAAAAtwIsAAAAAAAAA",
+              "ViewState": "AQIAAEwAAAAAAAAAAAArwGIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-03-17T09:42:20.752Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "jsapi.h",
               "DocumentMoniker": "C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\jsapi.h",
               "RelativeDocumentMoniker": "jsapi.h",
@@ -76,13 +76,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "SockerClient.h",
               "DocumentMoniker": "C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\SockerClient.h",
               "RelativeDocumentMoniker": "SockerClient.h",
               "ToolTip": "C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\SockerClient.h",
               "RelativeToolTip": "SockerClient.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-03-13T09:25:36.147Z",
               "EditorCaption": ""
@@ -113,7 +113,7 @@
               "RelativeDocumentMoniker": "SocketClient.cpp",
               "ToolTip": "C:\\Users\\USER\\Documents\\Animate-C-Extensibility\\Animate_C_Extension\\SocketClient.cpp",
               "RelativeToolTip": "SocketClient.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-03-13T08:47:37.357Z",
               "IsPinned": true,
