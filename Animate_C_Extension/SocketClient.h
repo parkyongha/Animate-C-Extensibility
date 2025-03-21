@@ -14,5 +14,5 @@ using boost::asio::ip::tcp;
 extern "C" {
 #include "jsapi.h"
 
-	JSBool tryConnectSocketClient(std::wstring& message);
+	bool tryConnectSocketClient(std::wstring& message);
 }
