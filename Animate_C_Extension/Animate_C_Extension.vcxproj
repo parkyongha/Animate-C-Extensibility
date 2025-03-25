@@ -214,11 +214,12 @@
   <ItemGroup>
     <ClInclude Include="PacketProcessor.hpp" />
     <ClInclude Include="jsapi.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="SocketClient.h" />
+    <ClInclude Include="myUtil.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="myUtil.cpp" />
     <ClCompile Include="SocketClient.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

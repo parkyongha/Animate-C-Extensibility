@@ -4,7 +4,6 @@
 #include <ws2tcpip.h>
 #include <windows.h>
 
-#include <string>
 #include <unordered_map>
 
 #include <boost/asio.hpp>

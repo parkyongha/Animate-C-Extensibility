@@ -1,17 +1,11 @@
-﻿extern "C"
-{
-#include "jsapi.h"
-}
-
-#include "SocketClient.h"
+﻿#include "SocketClient.h"
+#include "PacketProcessor.hpp"
 
 #include <chrono>
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <string>
-
-#include "PacketProcessor.hpp"
 
 #pragma comment(lib, "ws2_32.lib")
 

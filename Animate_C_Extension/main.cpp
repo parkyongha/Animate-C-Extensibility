@@ -3,8 +3,8 @@
 extern "C"
 {
 #include "jsapi.h"
-
 }
+
 #include "SocketClient.h"
 #include "PacketProcessor.hpp"
 

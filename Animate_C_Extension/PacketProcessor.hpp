@@ -3,10 +3,13 @@
 #include <unordered_map>
 #include <queue>
 #include <string>
+#include <ranges>
+
+#include "myUtil.hpp"
 
 class PacketProcessor {
 
-	using dataDic = std::unordered_map<std::wstring, std::queue<std::string>>;
+	using dataDic = std::unordered_map<std::string, std::vector<std::string>>;
 
 private:
 	std::string buffer; // 소켓에서 받은 데이터를 임시 저장
@@ -14,7 +17,7 @@ private:
 
 public:
 	static PacketProcessor& getInstance() {
-		static PacketProcessor instance; // C++11 이후, thread-safe 초기화 보장
+		static PacketProcessor instance;
 		return instance;
 	}
 
@@ -39,7 +42,6 @@ public:
 
 	// 프로토콜에 맞춰 버퍼를 파싱하는 함수
 	void parse() {
-		// 예시: 프로토콜이 "키:값\n" 형태라고 가정
 		size_t pos = 0;
 
 		while ((pos = buffer.find('\n')) != std::string::npos) {
@@ -48,12 +50,20 @@ public:
 			buffer.erase(0, pos + 1);
 
 			// ":(클론)" 을 기준으로 키와 값을 분리
-			size_t sep = line.find(':');
+			std::vector<std::string_view> colonSplit = split(line, ':');
 
-			if (sep != std::string::npos) {
-				std::wstring key = std::wstring(line.begin(), line.begin() + sep);
-				std::string value = line.substr(sep + 1);
-				parsedData[key].push(value);
+			std::string jsflName = std::string(colonSplit[0]);
+
+			std::string_view projectNames = colonSplit[1];
+
+			if (!projectNames.empty()) {
+				auto view = split(projectNames, ',') | std::views::transform([](std::string_view sv) {
+					return std::string(sv);
+					});
+
+				std::vector<std::string> projectNameSplit(view.begin(), view.end());
+
+				parsedData.insert({ jsflName, projectNameSplit });
 			}
 
 			// 추가적인 프로토콜 검증 및 에러 처리 로직 구현 가능
