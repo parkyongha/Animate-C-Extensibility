@@ -37,7 +37,7 @@ typedef JSBool(*JSNative)(JSContext* cx, JSObject* obj, unsigned int argc,
     (mmEnv.defineFunction ? (*(mmEnv.defineFunction))(mmEnv.libObj, n, c, a) \
                           : JS_FALSE)
 
-/* unsigned short *JS_ValueToString(JSContext *cx, jsval v, unsigned int *pLength) */
+/* unsigned short *JS_ValueToString(JSContext *cx, jsval v, unsigned short *pLength) */
 #define JS_ValueToString(c, v, l) \
     (mmEnv.valueToString  ? (*(mmEnv.valueToString))(c, v, l) : (unsigned short *)0)
 

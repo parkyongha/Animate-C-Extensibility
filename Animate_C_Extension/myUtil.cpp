@@ -15,3 +15,7 @@ std::vector<std::string_view> split(std::string_view str, char delim) {
 
     return tokens;
 }
+
+unsigned short* wstr2ushort(std::wstring& ws) {
+    return reinterpret_cast<unsigned short*>(&ws[0]);
+}

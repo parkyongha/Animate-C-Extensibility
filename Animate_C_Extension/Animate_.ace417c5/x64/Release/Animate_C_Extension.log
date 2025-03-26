@@ -1,9 +1,9 @@
-﻿  SocketClient.cpp
-  main.cpp
+﻿  main.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(4672,18): warning C4244: '=': 'const wchar_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.lib 라이브러리 및 C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.exp 개체를 생성하고 있습니다.
   코드를 생성하고 있습니다.
-  0 of 1832 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  1 of 1319 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Animate_C_Extension.vcxproj -> C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.dll

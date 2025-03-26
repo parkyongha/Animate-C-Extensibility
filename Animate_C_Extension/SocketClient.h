@@ -3,15 +3,10 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
-
-#include <unordered_map>
-
-#include <boost/asio.hpp>
-
-using boost::asio::ip::tcp;
+#include <future>
 
 extern "C" {
 #include "jsapi.h"
 
-	bool tryConnectSocketClient(std::wstring& message);
+	void testAsyncSocket(std::string& message);
 }

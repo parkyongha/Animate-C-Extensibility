@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <unordered_map>
 #include <queue>
@@ -12,7 +12,7 @@ class PacketProcessor {
 	using dataDic = std::unordered_map<std::string, std::vector<std::string>>;
 
 private:
-	std::string buffer; // ¼ÒÄÏ¿¡¼­ ¹ŞÀº µ¥ÀÌÅÍ¸¦ ÀÓ½Ã ÀúÀå
+	std::string buffer; // ì†Œì¼“ì—ì„œ ë°›ì€ ë°ì´í„°ë¥¼ ì„ì‹œ ì €ì¥
 	dataDic parsedData;
 
 public:
@@ -21,7 +21,7 @@ public:
 		return instance;
 	}
 
-	// º¹»ç »ı¼ºÀÚ¿Í ´ëÀÔ ¿¬»êÀÚ »èÁ¦
+	// ë³µì‚¬ ìƒì„±ìì™€ ëŒ€ì… ì—°ì‚°ì ì‚­ì œ
 	PacketProcessor(const PacketProcessor&) = delete;
 	PacketProcessor& operator=(const PacketProcessor&) = delete;
 
@@ -29,49 +29,50 @@ public:
 
 	}
 
-	std::wstring test() {
-		return L"HI???";
-	}
-
-	// ¼ÒÄÏ¿¡¼­ ¹ŞÀº µ¥ÀÌÅÍ¸¦ Ãß°¡
+	// ì†Œì¼“ì—ì„œ ë°›ì€ ë°ì´í„°ë¥¼ ì¶”ê°€
 	void appendData(const std::string& data) {
 		buffer.append(data);
 
 		parse();
 	}
 
-	// ÇÁ·ÎÅäÄİ¿¡ ¸ÂÃç ¹öÆÛ¸¦ ÆÄ½ÌÇÏ´Â ÇÔ¼ö
+	// í”„ë¡œí† ì½œì— ë§ì¶° ë²„í¼ë¥¼ íŒŒì‹±í•˜ëŠ” í•¨ìˆ˜
 	void parse() {
 		size_t pos = 0;
 
-		while ((pos = buffer.find('\n')) != std::string::npos) {
-			std::string line = buffer.substr(0, pos);
+		std::string line = buffer.c_str();
 
-			buffer.erase(0, pos + 1);
+		buffer.erase();
 
-			// ":(Å¬·Ğ)" À» ±âÁØÀ¸·Î Å°¿Í °ªÀ» ºĞ¸®
-			std::vector<std::string_view> colonSplit = split(line, ':');
+		// ":(í´ë¡ )" ì„ ê¸°ì¤€ìœ¼ë¡œ í‚¤ì™€ ê°’ì„ ë¶„ë¦¬
+		std::vector<std::string_view> colonSplit = split(line, ':');
 
-			std::string jsflName = std::string(colonSplit[0]);
+		std::string jsflName = std::string(colonSplit[0]);
 
-			std::string_view projectNames = colonSplit[1];
+		std::string_view projectNames = colonSplit[1];
 
-			if (!projectNames.empty()) {
-				auto view = split(projectNames, ',') | std::views::transform([](std::string_view sv) {
-					return std::string(sv);
-					});
+		if (!projectNames.empty()) {
+			auto view = split(projectNames, ',') | std::views::transform([](std::string_view sv) {
+				return std::string(sv);
+				});
 
-				std::vector<std::string> projectNameSplit(view.begin(), view.end());
+			std::vector<std::string> projectNameSplit(view.begin(), view.end());
 
-				parsedData.insert({ jsflName, projectNameSplit });
-			}
-
-			// Ãß°¡ÀûÀÎ ÇÁ·ÎÅäÄİ °ËÁõ ¹× ¿¡·¯ Ã³¸® ·ÎÁ÷ ±¸Çö °¡´É
+			parsedData.insert({ jsflName, projectNameSplit });
 		}
+
+		// ì¶”ê°€ì ì¸ í”„ë¡œí† ì½œ ê²€ì¦ ë° ì—ëŸ¬ ì²˜ë¦¬ ë¡œì§ êµ¬í˜„ ê°€ëŠ¥
 	}
 
-	const dataDic& getParsedData() const {
-		return parsedData;
+	const std::vector<std::string>& getParsedDataByName(const std::wstring& wsv) {
+		std::string str;
+		str.assign(wsv.begin(), wsv.end());
+
+		return parsedData[str];
+	}
+
+	const std::vector<std::string>& getParsedDataByName(const std::string& sv) {
+		return parsedData[sv];
 	}
 };
 

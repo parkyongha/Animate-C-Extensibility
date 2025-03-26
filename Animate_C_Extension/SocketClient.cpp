@@ -9,50 +9,80 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-std::unordered_map<std::string, std::string> myMap;
-
-void doRead(tcp::socket& socket, boost::asio::streambuf& buffer) {
-	// 입력 대기 끝에 문자에 "\n"이 들어와야 함수 호출됨
-	boost::asio::async_read_until(socket, buffer, "\0",
-		[&socket, &buffer](const boost::system::error_code& ec, std::size_t bytes_transferred) {
-			if (!ec) {
-				// 버퍼에 담긴 데이터를 string으로 변환합니다.
-				std::istream is(&buffer);
-				std::string message(std::istreambuf_iterator<char>(is), {});
-
-				// 받은 데이터를 map에 저장합니다.
-				PacketProcessor::getInstance().appendData(message);
-
-				std::cout << "받은 메시지: " << message << std::endl;
-
-				// 재귀적으로 다음 메시지를 기다립니다.
-				doRead(socket, buffer);
+// SOCKET에서 "\n"까지 비동기적으로 읽어, 읽은 메시지를 message에 저장하는 함수
+std::future<void> async_read_message(SOCKET sock, std::string& message) {
+	return std::async(std::launch::async, [&sock, &message]() {
+		std::string temp;
+		char ch;
+		int result;
+		while (true) {
+			result = recv(sock, &ch, 1, 0);
+			if (result <= 0) { // 에러 발생 또는 연결 종료
+				break;
 			}
-			else {
-				std::cerr << "읽기 오류: " << ec.message() << std::endl;
+			if (ch == '\n') { // 종료 문자 도착
+				break;
 			}
+			temp.push_back(ch);
+		}
+		message = std::move(temp);
 		});
 }
 
-bool tryConnectSocketClient(std::wstring& message) {
-	try {
-		boost::asio::io_context io_context;
-		tcp::resolver resolver(io_context);
+void testAsyncSocket(std::string& message) {
+	WSADATA wsaData;
 
-		auto endpoints = resolver.resolve("127.0.0.1", "50313");
+	// Winsock 초기화
+	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-		tcp::socket socket(io_context);
-		boost::asio::connect(socket, endpoints);
-
-		boost::asio::streambuf buffer;
-
-		// 비동기 읽기를 시작합니다. "\n" 문자가 나올 때까지 읽습니다.
-		doRead(socket, buffer);
-
-		// io_context.run()은 비동기 작업이 완료될 때까지 실행됩니다.
-		io_context.run();
+	if (iResult != 0) {
+		std::cerr << "WSAStartup 실패: " << iResult << std::endl;
+		return;
 	}
-	catch (std::exception& e) {
-		std::cerr << "예외 발생: " << e.what() << std::endl;
+
+	// 소켓 생성
+	SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (sock == INVALID_SOCKET) {
+		std::cerr << "소켓 생성 실패: " << WSAGetLastError() << std::endl;
+		WSACleanup();
+		return;
 	}
+
+	// 서버 주소 설정 (127.0.0.1:12345)
+	sockaddr_in serverAddr;
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(50313);
+	inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
+
+	// 서버에 연결
+	iResult = connect(sock, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
+
+	if (iResult == SOCKET_ERROR) {
+		std::cerr << "서버 연결 실패: " << WSAGetLastError() << std::endl;
+		closesocket(sock);
+		WSACleanup();
+		return;
+	}
+
+	std::cout << "서버에 연결됨." << std::endl;
+
+	message = "Connect Server";
+
+	// 비동기적으로 메시지 읽기 (읽은 메시지는 message에 저장됨)
+	auto future = async_read_message(sock, message);
+
+	// 다른 작업 수행 가능...
+
+	// 비동기 작업 완료 대기
+	future.get();
+	PacketProcessor::getInstance().appendData(message);
+	auto data = PacketProcessor::getInstance().getParsedDataByName("HI");
+
+	for (auto msg : data) {
+		std::cout << "받은 메시지: " << msg << '\n';
+	}
+
+	// 소켓 닫기 및 Winsock 종료
+	/*closesocket(sock);
+	WSACleanup();*/
 }
