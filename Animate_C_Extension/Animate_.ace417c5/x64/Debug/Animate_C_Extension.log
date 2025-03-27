@@ -1,8 +1,5 @@
-﻿  dllmain.cpp
-C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\SockerClient.h(12,14): warning C4190: 'WideStringToUTF8'에 C 연결을 지정했으나 C와 호환되지 않는 UDT 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'을(를) 반환합니다.
-  SocketClient.cpp
-C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\SockerClient.h(12,14): warning C4190: 'WideStringToUTF8'에 C 연결을 지정했으나 C와 호환되지 않는 UDT 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'을(를) 반환합니다.
-  코드를 생성하고 있습니다...
-  LINK : C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.dll을(를) 찾을 수 없거나 마지막 증분 링크에 의해 빌드되지 않았습니다. 전체 링크를 수행하고 있습니다.
+﻿  main.cpp
+C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\main.cpp(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(4672,18): warning C4244: '=': 'const wchar_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.lib 라이브러리 및 C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.exp 개체를 생성하고 있습니다.
   Animate_C_Extension.vcxproj -> C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Debug\Animate_C_Extension.dll

@@ -11,6 +11,8 @@ extern "C"
 #include "myUtil.hpp"
 
 #include <string>
+#include <locale>
+#include <codecvt>
 #include <iostream>
 #include <coroutine>
 
@@ -23,12 +25,6 @@ JSBool startSocketClient(JSContext* cx, JSObject* obj, unsigned int argc, jsval 
 	testAsyncSocket(msg);
 
 	socketMsg = std::wstring(msg.begin(), msg.end());
-	/*if () {
-		socketMsg = L"성공: " + socketMsg;
-	}
-	else {
-		socketMsg = L"오류: " + socketMsg;
-	}*/
 
 	// 결과 메시지를 JS 문자열로 변환하여 rval에 저장
 	if (!JS_StringToValue(cx,
@@ -77,9 +73,10 @@ JSBool getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[],
 		if (!JS_SetElement(cx, jsArray, i, &val))
 			return JS_FALSE;
 	}
-	std::wstring testErrWstr = L"TEST :: 테스트";
 
-	auto testErr = wstr2ushort(testErrWstr);
+	std::wstring testErrWstr = L"TEST::테스트";
+
+	unsigned short* testErr = wstr2ushort(testErrWstr);
 	unsigned int testErrLen = static_cast<unsigned int>(testErrWstr.length());
 
 	JS_ReportError(cx, testErr, testErrLen);
@@ -89,8 +86,37 @@ JSBool getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[],
 	return JS_TRUE;
 }
 
-JSBool sendMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
-	return JS_FALSE;
+JSBool _sendMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
+	sendMessageToServer("str");
+
+	// 문자열의 길이를 저장할 변수 선언
+	unsigned int length = 0;
+
+	// 문자열 얻기 (UTF-16 형식)
+	unsigned short* jsStr = JS_ValueToString(cx, argv[0], &length);
+
+	if (!jsStr || length == 0) {
+		std::wstring errMsg = L"Invalid string argument.";
+		JS_ReportError(cx, wstr2ushort(errMsg), 0);
+		return JS_FALSE;
+	}
+
+	// UTF-16 문자열 확보 (wchar_t 호환)
+	std::wstring ws(jsStr, jsStr + length);
+
+	// UTF-8 문자열로 변환
+	std::string str = WStringToUTF8(ws);
+
+	sendMessageToServer("str");
+
+	return JS_TRUE;
+}
+
+JSBool test(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
+
+	sendMessageToServer("str");
+
+	return JS_TRUE;
 }
 
 MM_STATE
@@ -98,17 +124,22 @@ MM_STATE
 void MM_Init() {
 	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"startSocketClient")), startSocketClient, 0);
 	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"getMessage")), getMessage, 1);
-	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"sendMessage")), sendMessage, 2);
+	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"sendMessage")), test, 1);
 }
 
 //int main() {
-//	//std::wstring wmsg;
-//	//tryConnectSocketClient(wmsg);
-//	//std::wcout << wmsg;
 //
 //	std::string msg;
 //	testAsyncSocket(msg);
 //	std::cout << msg;
+//
+//	std::cout << "소켓 연결 후 대기 중..." << '\n';
+//
+//	std::string str = "Test Hello World\n";
+//
+//	sendMessage(str);
+//
+//	std::cin.get();
 //
 //	return 0;
 //}

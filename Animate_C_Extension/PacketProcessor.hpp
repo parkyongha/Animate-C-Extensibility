@@ -56,12 +56,15 @@ public:
 				return std::string(sv);
 				});
 
-			std::vector<std::string> projectNameSplit(view.begin(), view.end());
 
-			parsedData.insert({ jsflName, projectNameSplit });
+			if (parsedData.find(jsflName) != parsedData.end()) {
+				parsedData[jsflName].insert(parsedData[jsflName].end(), view.begin(), view.end());
+			}
+			else {
+				std::vector<std::string> projectNameSplit(view.begin(), view.end());
+				parsedData.insert({ jsflName, projectNameSplit });
+			}
 		}
-
-		// 추가적인 프로토콜 검증 및 에러 처리 로직 구현 가능
 	}
 
 	const std::vector<std::string>& getParsedDataByName(const std::wstring& wsv) {
