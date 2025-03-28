@@ -1,12 +1,9 @@
 ﻿  SocketClient.cpp
-C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\SocketClient.cpp(45,49): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(4672,18): warning C4244: '=': 'const wchar_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   main.cpp
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.40.33807\include\xutility(4672,18): warning C4244: '=': 'const wchar_t'에서 'char'(으)로 변환하면서 데이터가 손실될 수 있습니다.
      C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.lib 라이브러리 및 C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.exp 개체를 생성하고 있습니다.
   코드를 생성하고 있습니다.
-  4 of 675 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
-    2 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  20 of 710 functions ( 2.8%) were compiled, the rest were copied from previous compilation.
+    3 functions were new in current compilation
+    70 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   Animate_C_Extension.vcxproj -> C:\Users\USER\Documents\Animate-C-Extensibility\Animate_C_Extension\x64\Release\Animate_C_Extension.dll

@@ -6,9 +6,9 @@ extern "C"
 }
 
 #include "SocketClient.h"
-#include "PacketProcessor.hpp"
+#include "PacketProcessor.h"
 
-#include "myUtil.hpp"
+#include "myUtil.h"
 
 #include <string>
 #include <locale>
@@ -16,13 +16,13 @@ extern "C"
 #include <iostream>
 #include <coroutine>
 
-JSBool startSocketClient(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
+JSBool JS_startSocketClient(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
 	std::wstring socketMsg;
 
 	std::string msg;
 
 	// 메시지에 성공/실패 정보를 명시적으로 포함
-	testAsyncSocket(msg);
+	SocketClient::GetInstance().Connect(50313);
 
 	socketMsg = std::wstring(msg.begin(), msg.end());
 
@@ -38,7 +38,7 @@ JSBool startSocketClient(JSContext* cx, JSObject* obj, unsigned int argc, jsval 
 	return JS_TRUE;
 }
 
-JSBool getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
+JSBool JS_getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
 
 	// 문자열의 길이를 저장할 변수 선언
 	unsigned int length = 0;
@@ -52,7 +52,7 @@ JSBool getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[],
 
 	wchar_t* cStr = reinterpret_cast<wchar_t*>(jsStr);
 
-	auto& data = PacketProcessor::getInstance().getParsedDataByName(cStr);
+	auto& data = PacketProcessor::GetInstance().GetParsedDataByName(cStr);
 
 	JSObject* jsArray = JS_NewArrayObject(cx, 0, nullptr);
 
@@ -86,8 +86,7 @@ JSBool getMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[],
 	return JS_TRUE;
 }
 
-JSBool _sendMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
-	sendMessageToServer("str");
+JSBool JS_sendMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
 
 	// 문자열의 길이를 저장할 변수 선언
 	unsigned int length = 0;
@@ -107,39 +106,34 @@ JSBool _sendMessage(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[
 	// UTF-8 문자열로 변환
 	std::string str = WStringToUTF8(ws);
 
-	sendMessageToServer("str");
+	SocketClient::GetInstance().SendData(str);
 
 	return JS_TRUE;
 }
 
-JSBool test(JSContext* cx, JSObject* obj, unsigned int argc, jsval argv[], jsval* rval) {
-
-	sendMessageToServer("str");
-
-	return JS_TRUE;
-}
 
 MM_STATE
 
 void MM_Init() {
-	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"startSocketClient")), startSocketClient, 0);
-	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"getMessage")), getMessage, 1);
-	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"sendMessage")), test, 1);
+	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"startSocketClient")), JS_startSocketClient, 0);
+	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"getMessage")), JS_getMessage, 1);
+	JS_DefineFunction(reinterpret_cast<unsigned short*>(const_cast<wchar_t*>(L"sendMessage")), JS_sendMessage, 1);
 }
 
-//int main() {
-//
-//	std::string msg;
-//	testAsyncSocket(msg);
-//	std::cout << msg;
-//
-//	std::cout << "소켓 연결 후 대기 중..." << '\n';
-//
-//	std::string str = "Test Hello World\n";
-//
-//	sendMessage(str);
-//
-//	std::cin.get();
-//
-//	return 0;
-//}
+int main() {
+
+	std::string msg;
+	if (SocketClient::GetInstance().Connect(50313)) {
+		std::cout << "서버 연결" << '\n';
+	}
+
+	std::string str = "Test Hello World\n";
+
+	SocketClient::GetInstance().SendData(str);
+
+	std::cin.get();
+	
+	SocketClient::GetInstance().Disconnect();
+
+	return 0;
+}

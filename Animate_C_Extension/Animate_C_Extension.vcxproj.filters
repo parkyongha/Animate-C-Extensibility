@@ -21,10 +21,10 @@
     <ClInclude Include="SocketClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PacketProcessor.hpp">
+    <ClInclude Include="PacketProcessor.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="myUtil.hpp">
+    <ClInclude Include="myUtil.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -36,6 +36,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="myUtil.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketProcessor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

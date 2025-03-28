@@ -1,101 +1,97 @@
 ﻿#include "SocketClient.h"
-#include "PacketProcessor.hpp"
+#include "PacketProcessor.h"
 
-#include <chrono>
 #include <iostream>
-#include <memory>
-#include <sstream>
-#include <string>
 
-#pragma comment(lib, "ws2_32.lib")
+SocketClient* SocketClient::instance = nullptr;
+std::mutex SocketClient::instanceMutex;
 
-SOCKET sock;
-
-void read_loop() {
-	std::thread([]() {
-		while (true) {
-			std::string temp;
-			char ch;
-			int result;
-
-			while (true) {
-				result = recv(sock, &ch, 1, 0);
-				if (result <= 0 || ch == '\n') {
-					break;
-				}
-				temp.push_back(ch);
-			}
-
-			std::cout << temp;
-
-			PacketProcessor::getInstance().appendData(temp);
-
-			// 입력 테스트 코드
-			//auto data = PacketProcessor::getInstance().getParsedDataByName("HI");
-
-			//for (auto msg : data) {
-			//	std::cout << "받은 메시지: " << msg << '\n';
-			//}
-		}
-		}).detach();
+SocketClient::SocketClient() : sock(INVALID_SOCKET), connected(false) {
+    WSADATA wsaData;
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
 
-bool sendMessageToServer(const std::string_view msg)
-{
-	int iResult = send(sock, msg.data(), msg.length(), 0);
-
-	if (iResult == SOCKET_ERROR) {
-		std::wcout << (L"send failed with error: %d\n", WSAGetLastError());
-		closesocket(sock);
-		WSACleanup();
-		return false;
-	}
-
-	return true;
+SocketClient::~SocketClient() {
+    Disconnect();
+    WSACleanup();
 }
 
-void testAsyncSocket(std::string& message) {
-	WSADATA wsaData;
+SocketClient& SocketClient::GetInstance() {
+    static SocketClient instance;
+    return instance;
+}
 
-	// Winsock 초기화
-	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+bool SocketClient::Connect(int port) {
+    if (connected) {
+        return true;
+    }
 
-	if (iResult != 0) {
-		std::cerr << "WSAStartup 실패: " << iResult << '\n';
-		return;
-	}
+    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed: " << WSAGetLastError() << "\n";
+        return false;
+    }
 
-	// 소켓 생성
-	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (sock == INVALID_SOCKET) {
-		std::cerr << "소켓 생성 실패: " << WSAGetLastError() << '\n';
-		WSACleanup();
-		return;
-	}
+    sockaddr_in serverAddress{};
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(port);
+    inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr);
 
-	// 서버 주소 설정 (127.0.0.1:12345)
-	sockaddr_in serverAddr;
-	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(50313);
-	inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
+    if (connect(sock, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
+        std::cerr << "Connection failed: " << WSAGetLastError() << "\n";
+        closesocket(sock);
+        return false;
+    }
 
-	// 서버에 연결
-	iResult = connect(sock, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr));
+    connected = true;
+    receiveThread = std::thread(&SocketClient::receiveLoop, this);
+    return true;
+}
 
-	if (iResult == SOCKET_ERROR) {
-		std::cerr << "서버 연결 실패: " << WSAGetLastError() << '\n';
-		closesocket(sock);
-		WSACleanup();
-		return;
-	}
+void SocketClient::Disconnect() {
+    if (connected) {
+        connected = false;
+        shutdown(sock, SD_BOTH);
+        closesocket(sock);
 
-	std::cout << "Connect Server" << '\n';
+        if (receiveThread.joinable()) {
+            receiveThread.join();
+        }
+    }
+}
 
-	message = "Connect Server";
+bool SocketClient::SendData(const std::string& data) {
+    if (!connected) return false;
 
-	read_loop();
+    std::string str = data + '\n';
 
-	// 소켓 닫기 및 Winsock 종료
-	/*closesocket(sock);
-	WSACleanup();*/
+    int sentBytes = send(sock, str.c_str(), static_cast<int>(str.size()), 0);
+    return sentBytes == static_cast<int>(data.size());
+}
+
+void SocketClient::receiveLoop() {
+    char buffer[1024];
+    while (connected) {
+        int received = recv(sock, buffer, sizeof(buffer), 0);
+
+        if (received > 0) {
+            std::string data(buffer, received);
+
+            PacketProcessor::GetInstance().AppendData(data);
+
+            SendData("Done");
+
+            for (auto data : PacketProcessor::GetInstance().GetParsedDataByName("Test")) {
+                std::cout << "받은 데이터 : " << data << '\n';
+            }
+        }
+        else if (received == 0) {
+            std::cerr << "Connection closed by the server\n";
+            connected = false;
+        }
+        else {
+            std::cerr << "Receive failed: " << WSAGetLastError() << "\n";
+            connected = false;
+        }
+    }
 }
