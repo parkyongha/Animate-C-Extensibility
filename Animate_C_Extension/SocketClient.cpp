@@ -83,7 +83,7 @@ void SocketClient::receiveLoop() {
 
             for (auto data : PacketProcessor::GetInstance().GetParsedDataByName("Test")) {
                 std::cout << "받은 데이터 : " << data << '\n';
-            }
+            } 
         }
         else if (received == 0) {
             std::cerr << "Connection closed by the server\n";
